@@ -177,14 +177,9 @@ class PackageDefinition:
             # wrap file location and must be in the form foo/subprojects/bar.wrap.
             dirname = Path(self.filename).parent
             fname = Path(self.values['filename'])
-            for i, p in enumerate(fname.parts):
-                if i % 2 == 0:
-                    if p == '..':
-                        raise WrapException('wrap-redirect filename cannot contain ".."')
-                else:
-                    if p != 'subprojects':
-                        raise WrapException('wrap-redirect filename must be in the form foo/subprojects/bar.wrap')
-            if fname.suffix != '.wrap':
+            if '..' in fname.parts:
+                raise WrapException('wrap-redirect filename cannot contain ".."')
+            elif fname.suffix != '.wrap':
                 raise WrapException('wrap-redirect filename must be a .wrap file')
             fname = dirname / fname
             if not fname.is_file():
